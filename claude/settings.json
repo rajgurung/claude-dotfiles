@@ -1,0 +1,65 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(*)",
+      "Write(*)",
+      "Edit(*)",
+      "Glob(*)",
+      "Grep(*)",
+      "WebFetch(*)",
+      "WebSearch(*)",
+      "NotebookEdit(*)"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "command -v bd >/dev/null 2>&1 && bd prime || true"
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "command -v bd >/dev/null 2>&1 && bd prime || true"
+          }
+        ]
+      }
+    ]
+  },
+  "enabledPlugins": {
+    "vercel@claude-plugins-official": true,
+    "swift-lsp@claude-plugins-official": true
+  },
+  "extraKnownMarketplaces": {
+    "agent-board": {
+      "source": {
+        "source": "github",
+        "repo": "rajgurung/agent-board"
+      }
+    }
+  },
+  "alwaysThinkingEnabled": true,
+  "modelSettings": {
+    "claude-opus-5-5": {
+      "autoCompactWindow": 400000
+    }
+  },
+  "tui": "fullscreen",
+  "theme": "light-daltonized",
+  "agentPushNotifEnabled": true,
+  "autoMode": {
+    "soft_deny": [
+      "$defaults",
+      "Bash(git push:* --force*) to main or master: always confirm first"
+    ]
+  }
+}
