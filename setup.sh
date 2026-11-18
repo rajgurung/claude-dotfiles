@@ -46,6 +46,35 @@ for agent_file in "$DOTFILES_DIR/claude/agents"/*.md; do
     echo "Linked: agents/$agent_name"
 done
 
+# --- Settings (merged, never overwritten) ---
+# Copies claude/settings.json if there is none. If settings already exist,
+# merges them so this machine's own values win and nothing is lost.
+REPO_SETTINGS="$DOTFILES_DIR/claude/settings.json"
+if [ ! -f "$CLAUDE_DIR/settings.json" ]; then
+    cp "$REPO_SETTINGS" "$CLAUDE_DIR/settings.json"
+    echo "Installed: settings.json"
+else
+    cp "$CLAUDE_DIR/settings.json" "$BACKUP_DIR/settings.json"
+    python3 -I - "$REPO_SETTINGS" "$CLAUDE_DIR/settings.json" <<'PY'
+import json, sys
+def merge(base, local):
+    out = dict(base)
+    for k, v in local.items():
+        if isinstance(v, dict) and isinstance(out.get(k), dict):
+            out[k] = merge(out[k], v)
+        elif isinstance(v, list) and isinstance(out.get(k), list):
+            out[k] = out[k] + [x for x in v if x not in out[k]]
+        else:
+            out[k] = v
+    return out
+repo, local_path = sys.argv[1], sys.argv[2]
+merged = merge(json.load(open(repo)), json.load(open(local_path)))
+json.dump(merged, open(local_path, "w"), indent=2)
+PY
+    echo "Merged: settings.json (backup in $BACKUP_DIR)"
+fi
+echo "Add secrets (API tokens) to ~/.claude/settings.json under \"env\" by hand. They are never stored in this repo."
+
 echo ""
 echo "=== Skills Installed ==="
 echo "  /plan       - Structured project planning"

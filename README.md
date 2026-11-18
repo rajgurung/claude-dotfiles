@@ -30,7 +30,7 @@ cd ~/Codes/claude-dotfiles
 ├── agents/
 │   └── rails-expert.md      # Rails specialist agent
 ├── CLAUDE.md                 # Global conventions
-└── settings.json             # Hooks for memsearch + existing config
+└── settings.json             # Permissions, hooks, plugins, theme (merged, not overwritten)
 ```
 
 ## Dependencies
@@ -49,3 +49,11 @@ cd ~/Codes/claude-dotfiles
 6. `/retro` captures what you learned for next time
 
 Your agentic OS travels with you. Projects don't need any setup.
+
+## Settings
+
+`claude/settings.json` holds the shared settings: tool permissions, the `bd prime` hooks (skipped if `bd` isn't installed), plugins, theme and model options.
+
+`setup.sh` copies it when a machine has no settings yet. If a machine already has settings (for example a work laptop), it merges them: the machine's own values win, lists are combined, and a backup is saved in `~/.claude/backups/`.
+
+Secrets never go in this repo. This repo is public. Add tokens on each machine under `"env"` in `~/.claude/settings.json`.
